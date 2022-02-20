@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html lang="end">
+    <head>
+        <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <style>
+            #app {
+                text-align: center;
+                font-family: sans-serif;
+            }
+
+            #problem {
+                font-size: 72px;
+            }
+
+            #result {
+                font-size: 52px;
+            }
+            
+            .correct {
+                color: green;
+            }
+
+            .wrong {
+                color: red;
+            }
+
+            #winner {
+                font-size: 72px;
+                color: green;
+            }
+        </style>
+        <title>Multiplication</title>
+    </head>
+    <body>
+        <div id="app"></div>
+
+        <script type="text/babel">
+
+            function App() {
+
+                const [state, setState] = React.useState({
+                    num1: Math.ceil(Math.random() * 20),
+                    num2: Math.ceil(Math.random() * 20),
+                    response: "",
+                    score: 0,
+                    result: "",
+                    incorrect: false
+                });
+
+                function inputKeyPress(event) {
+                    if (event.key === "Enter") {
+                        const answer = parseInt(state.response);
+                        if (state.num1 * state.num2 === answer) {
+                            // User got the question right
+                            setState({
+                                ...state,
+                                num1: Math.ceil(Math.random() * 10),
+                                num2: Math.ceil(Math.random() * 20),
+                                score: state.score + 1,
+                                response: "",
+                                result: "Correct :)",
+                                incorrect: false
+                            });
+                        }
+                        else {
+                            // User got the question wrong
+                            setState({
+                                ...state,
+                                score: state.score - 1,
+                                response: "",
+                                result: "Wrong :(",
+                                incorrect: true
+                            });
+                        }
+                    }
+                }
+
+                function updateResponse(event) {
+                    setState({
+                        ...state,
+                        response: event.target.value
+                    });
+                }
+
+                if (state.score === 10) {
+                    return (
+                        <div id="winner">You have won!</div>
+                    );
+                }
+
+                return (
+                    <div>
+                        <div id="problem">{state.num1} * {state.num2}</div>
+                        <input autoFocus={true} onKeyPress={inputKeyPress} onChange={updateResponse} value={state.response} />
+                        <div>Score: {state.score}</div>
+                        <div className={state.incorrect ? "wrong" : "correct"} id="result">{state.result}</div>
+                    </div>
+                );
+            }
+
+            ReactDOM.render(<App />, document.querySelector("#app"));
+        </script>
+    </body>
+</html>
